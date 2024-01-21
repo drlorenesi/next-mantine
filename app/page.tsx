@@ -1,95 +1,200 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+
+import cx from "clsx";
+import Link from "next/link";
+
+import {
+  ActionIcon,
+  AppShell,
+  Avatar,
+  Burger,
+  Divider,
+  Group,
+  NavLink,
+  Menu,
+  rem,
+  ScrollArea,
+  Title,
+  UnstyledButton,
+  useMantineColorScheme,
+  useComputedColorScheme,
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import {
+  IconGraph,
+  IconSun,
+  IconMoon,
+  IconForms,
+  IconTable,
+  IconLogout,
+  IconUserCog,
+} from "@tabler/icons-react";
+
+// Components
+import Text from "./Text";
+import Footer from "./Footer";
+
+import classes from "./page.module.css";
 
 export default function Home() {
+  // Toggle menu hooks
+  const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
+  const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+  // Color scheme hooks
+  const { setColorScheme } = useMantineColorScheme();
+  const computedColorScheme = useComputedColorScheme("light", {
+    getInitialValueInEffect: true,
+  });
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
+    <AppShell
+      header={{ height: 60 }}
+      navbar={{
+        width: 260,
+        breakpoint: "sm",
+        collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
+      }}
+      padding="md"
+    >
+      <AppShell.Header>
+        <Group h="100%" px="sm" justify="space-between">
+          <Group>
+            <Burger
+              opened={mobileOpened}
+              onClick={toggleMobile}
+              hiddenFrom="sm"
+              size="sm"
             />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+            <Burger
+              opened={desktopOpened}
+              onClick={toggleDesktop}
+              visibleFrom="sm"
+              size="sm"
+            />
+            <UnstyledButton component={Link} href="/">
+              <Title order={3}>Next.js App</Title>
+            </UnstyledButton>
+          </Group>
+          <Group justify="flex-end" gap="xs">
+            {/* Darkmode */}
+            {/* -------- */}
+            <ActionIcon
+              onClick={() =>
+                setColorScheme(
+                  computedColorScheme === "light" ? "dark" : "light"
+                )
+              }
+              variant="default"
+              size="lg"
+              aria-label="Toggle color scheme"
+            >
+              <IconSun
+                className={cx(classes.icon, classes.light)}
+                stroke={1.5}
+              />
+              <IconMoon
+                className={cx(classes.icon, classes.dark)}
+                stroke={1.5}
+              />
+            </ActionIcon>
+            {/* Profile Menu */}
+            {/* ------------ */}
+            <Menu shadow="md" width={200} position="bottom-end">
+              <Menu.Target>
+                {/* <Button>Toggle menu</Button> */}
+                <UnstyledButton>
+                  <Avatar color="cyan" radius="xl" />
+                </UnstyledButton>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item component="a" href="https://mantine.dev">
+                  Mantine website
+                </Menu.Item>
+                <Menu.Item
+                  leftSection={
+                    <IconUserCog style={{ width: rem(14), height: rem(14) }} />
+                  }
+                >
+                  Mi Perfil
+                </Menu.Item>
+                <Menu.Divider />
+                <Menu.Item
+                  leftSection={
+                    <IconLogout style={{ width: rem(14), height: rem(14) }} />
+                  }
+                >
+                  Cerrar Sesión
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+          </Group>
+        </Group>
+      </AppShell.Header>
+      <AppShell.Navbar p="md">
+        <AppShell.Section grow component={ScrollArea}>
+          {/* Reports */}
+          {/* ------- */}
+          <NavLink
+            href="#required-for-focus"
+            label="Reports"
+            leftSection={
+              <ActionIcon variant="filled" color="cyan" size="sm">
+                <IconGraph
+                  style={{ width: "70%", height: "70%" }}
+                  stroke={1.5}
+                />
+              </ActionIcon>
+            }
+          >
+            <NavLink label="First child link" href="#required-for-focus" />
+            <NavLink label="Second child link" href="#required-for-focus" />
+            <NavLink label="Third child link" href="#required-for-focus" />
+          </NavLink>
+          {/* Forms */}
+          {/* ----- */}
+          <NavLink
+            href="#required-for-focus"
+            label="Forms"
+            leftSection={
+              <ActionIcon variant="filled" color="grape" size="sm">
+                <IconForms
+                  style={{ width: "70%", height: "70%" }}
+                  stroke={1.5}
+                />
+              </ActionIcon>
+            }
+          >
+            <NavLink label="First child link" href="#required-for-focus" />
+            <NavLink label="Second child link" href="#required-for-focus" />
+            <NavLink label="Third child link" href="#required-for-focus" />
+          </NavLink>
+          {/* Tables */}
+          {/* ------ */}
+          <NavLink
+            href="#required-for-focus"
+            label="Third parent link"
+            leftSection={
+              <ActionIcon variant="filled" color="indigo" size="sm">
+                <IconTable
+                  style={{ width: "70%", height: "70%" }}
+                  stroke={1.5}
+                />
+              </ActionIcon>
+            }
+          >
+            <NavLink label="First child link" href="#required-for-focus" />
+            <NavLink label="Second child link" href="#required-for-focus" />
+            <NavLink label="Third child link" href="#required-for-focus" />
+          </NavLink>
+        </AppShell.Section>
+      </AppShell.Navbar>
+      <AppShell.Main
+        style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
+      >
+        <Title order={4}>Main</Title>
+        {/* <Text /> */}
+        <Footer />
+      </AppShell.Main>
+    </AppShell>
+  );
 }
